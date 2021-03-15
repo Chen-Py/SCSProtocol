@@ -35,21 +35,44 @@ class ClientBase:
     def sendtoBob(self, msg):
         self.sock.send('STB', msg)
         reply = self.sock.recvstr()
-        print('reply:' + reply)
-        if reply == 'True':
-            return True
-        return False
+        return bool(reply)
 
     def prepareAlice(self):
         self.algo.makea()
         name, public_key = self.getPublicKey('Trent')
         A_0 = self.algo.makeA_0(public_key[0], public_key[1])
-        time.sleep(0.1)
+        time.sleep(1)
         name, public_key = self.getPublicKey('Bob')
         if public_key == None:return None
         sA_0 = self.algo.RSA.docode(A_0, public_key)
         time.sleep(0.1)
-        self.sendtoBob(sA_0)
+        return self.sendtoBob(sA_0)
+
+    def Bobgetmsg(self):
+        self.sock.send('BGM', None)
+        reply = self.sock.recvstr()
+        return int(reply)
+
+    def BobputN_0(self, N_0):
+        self.sock.send('BPO', str(N_0))
+        reply = self.sock.recvstr()
+        return bool(reply)
+
+    def prepareBob(self):
+        self.algo.makea()
+        self.publicRSAkey()
+        time.sleep(0.1)
+        name, public_key = self.getPublicKey('Trent')
+        B_0 = self.algo.makeA_0(public_key[0], public_key[1])
+        time.sleep(2)
+        sA_0 = self.Bobgetmsg()
+        A_0 = self.algo.RSA.decode(sA_0)
+        N_0 = (A_0 * B_0) % public_key[1]
+        time.sleep(0.1)
+        return self.BobputN_0(N_0)
+
+
+
 
 
 algo = ClientAlgo(23, 29, 31)
