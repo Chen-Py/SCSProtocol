@@ -1,7 +1,6 @@
-from TrentAlgo import TrentAlgo
+from trentalgo import TrentAlgo
 from socket import *
 from threading import Thread
-from TrentAlgo import TrentAlgo
 
 class TrentBase(Thread):
     def __init__(self, clisocket, algo):
@@ -51,7 +50,6 @@ class TrentBase(Thread):
                     print('Logged out')
                     break
         self.clisock.close()
-
 algo = TrentAlgo(83, 89, 97)
 sock = socket(AF_INET, SOCK_STREAM)
 sock.bind(('127.0.0.1', 21567)) 

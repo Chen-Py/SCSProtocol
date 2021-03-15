@@ -1,6 +1,5 @@
-from RSA import *
+from rsa import *
 import random
-
 class TrentAlgo:
     
     MAXINT = 1e100 
