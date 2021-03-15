@@ -50,5 +50,10 @@ class RSA:
         if self.private_key == None:return None
         m = supermy(c, self.private_key[0], self.private_key[1])
         return m
+
+    def docode(self, msg, key):
+        ans = supermy(msg, key[0], key[1])
+        return ans
+
     pass
 

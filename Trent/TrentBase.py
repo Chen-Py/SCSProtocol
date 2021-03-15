@@ -10,8 +10,20 @@ class TrentBase(Thread):
         self.bufsiz = 1024
         self.switch = {'hello': self.hello,
                         'CEK': self.checkconnect,
-                        'PUB': self.publickey
+                        'PUB': self.publickey,
+                        'GTK': self.getPublicKey,
+                        'STB': self.sendtoBob
                 }
+
+    def sendtoBob(self):
+        msg = self.clisock.recv(self.bufsiz).decode()
+        self.clisock.send('True'.encode())
+
+    def getPublicKey(self):
+        name = self.clisock.recv(self.bufsiz).decode()
+        self.clisock.send(str(('Chen_Py', (123, 456))).encode())
+
+
     def hello(self):
         print('HelloWorld') 
 
@@ -19,9 +31,6 @@ class TrentBase(Thread):
         public_key = self.clisock.recv(self.bufsiz).decode()
         public_key = tuple(public_key[1:-1].split(', '))
         public_key = int(public_key[0]), int(public_key[1])
-        print(public_key)
-        print(public_key[0])
-        print(public_key[1])
         self.clisock.send(str(public_key).encode())
 
     def checkconnect(self):
@@ -55,11 +64,8 @@ sock = socket(AF_INET, SOCK_STREAM)
 sock.bind(('127.0.0.1', 21567)) 
 sock.listen(5)
 print('Waiting...')
-
-clisock, addr = sock.accept()
-
-print('...receive from' + str(addr))
-
-TB = TrentBase(clisock, algo)
-
-TB.start()
+while(1):
+    clisock, addr = sock.accept()
+    TB = TrentBase(clisock, algo)
+    TB.start()
+    print('...receive from' + str(addr))
