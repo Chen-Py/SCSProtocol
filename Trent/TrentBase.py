@@ -12,8 +12,18 @@ class TrentBase(Thread):
                         'CEK': self.checkconnect,
                         'PUB': self.publickey,
                         'GTK': self.getPublicKey,
-                        'STB': self.sendtoBob
+                        'STB': self.sendtoBob,
+                        'BGM': self.BobgetMessage,
+                        'BPO': self.BobputN_0
                 }
+
+    def BobgetMessage():
+
+
+    def BobputN_0():
+        N_0 = int(self.clisock.recv(self.bufsiz).decode())
+        self.algo.makeN(N_0)
+        self.clisock.send('True'.encode())
 
     def sendtoBob(self):
         msg = self.clisock.recv(self.bufsiz).decode()
