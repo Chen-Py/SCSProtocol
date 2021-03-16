@@ -47,12 +47,12 @@ class ClientBase:
         sA_0 = self.algo.RSA.docode(A_0, public_key)
         time.sleep(0.1)
         return self.sendtoBob(sA_0)
-
+#
     def Bobgetmsg(self):
         self.sock.send('BGM', None)
         reply = self.sock.recvstr()
         return int(reply)
-
+#
     def BobputN_0(self, N_0):
         self.sock.send('BPO', str(N_0))
         reply = self.sock.recvstr()
