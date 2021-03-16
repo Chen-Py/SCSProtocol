@@ -1,6 +1,6 @@
 from trentalgo import TrentAlgo
 from socket import *
-from threading import Thread
+from threading import Thread, Condition
 
 N = None
 BobKey = None
@@ -87,6 +87,8 @@ class TrentBase(Thread):
                     print('Logged out')
                     break
         self.clisock.close()
+
+#cond = Condition()
 algo = TrentAlgo(83, 89, 97)
 sock = socket(AF_INET, SOCK_STREAM)
 sock.bind(('127.0.0.1', 21567)) 
