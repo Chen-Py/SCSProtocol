@@ -24,9 +24,7 @@ class ClientBase:
     def getPublicKey(self, name):
         self.sock.send('GTK', name)
         reply = self.sock.recvstr()
-        print(reply)
         tmp = reply[1: -1].split(', (')
-        print(tmp)
         name = tmp[0][1: -1]
         public_key = tmp[1][0:-1].split(', ')
         public_key = int(public_key[0]), int(public_key[1])
@@ -80,5 +78,6 @@ client = ClientBase('127.0.0.1', 21567, algo)
 
 print(client.sock.state)
 print(client.publicRSAkey())
-print(client.getPublicKey('Chen_Py'))
-client.sendtoBob('Hello Bob')
+print(client.getPublicKey('Bob'))
+client.sendtoBob('123')
+print(client.Bobgetmsg())

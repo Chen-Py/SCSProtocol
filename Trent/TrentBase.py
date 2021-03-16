@@ -2,6 +2,11 @@ from trentalgo import TrentAlgo
 from socket import *
 from threading import Thread
 
+N = None
+BobKey = None
+AlicesA_0 = None
+AB = 1
+
 class TrentBase(Thread):
     def __init__(self, clisocket, algo):
         Thread.__init__(self)
@@ -17,30 +22,43 @@ class TrentBase(Thread):
                         'BPO': self.BobputN_0
                 }
 
-    def BobgetMessage():
+    def BobgetMessage(self):
+        global AlicesA_0
+        self.clisock.send(str(AlicesA_0).encode())
 
-
-    def BobputN_0():
+    def BobputN_0(self):
+        global N
         N_0 = int(self.clisock.recv(self.bufsiz).decode())
         self.algo.makeN(N_0)
+        N = self.algo.N
         self.clisock.send('True'.encode())
 
     def sendtoBob(self):
+        global AlicesA_0
         msg = self.clisock.recv(self.bufsiz).decode()
+        AlicesA_0 = int(msg)
         self.clisock.send('True'.encode())
 
     def getPublicKey(self):
         name = self.clisock.recv(self.bufsiz).decode()
-        self.clisock.send(str(('Chen_Py', (123, 456))).encode())
+        pubkey = None
+        if name == 'Trent':
+            pubkey = self.algo.RSA.public_key
+        elif name == 'Bob':
+            global BobKey
+            pubkey = BobKey
+        self.clisock.send(str((name, pubkey)).encode())
 
 
     def hello(self):
         print('HelloWorld') 
 
     def publickey(self):
+        global BobKey
         public_key = self.clisock.recv(self.bufsiz).decode()
         public_key = tuple(public_key[1:-1].split(', '))
         public_key = int(public_key[0]), int(public_key[1])
+        BobKey = public_key
         self.clisock.send(str(public_key).encode())
 
     def checkconnect(self):
