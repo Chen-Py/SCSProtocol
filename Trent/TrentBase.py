@@ -4,7 +4,7 @@ from threading import Thread, Condition
 
 N = None
 BobKey = None
-AlicesA_0 = None
+AlicesA_0 = 0
 AB = 1
 
 class TrentBase(Thread):
@@ -29,6 +29,7 @@ class TrentBase(Thread):
         global N
         N_0 = int(self.clisock.recv(self.bufsiz).decode())
         self.algo.makeN(N_0)
+
         N = self.algo.N
         print('N= ' + str(N))
         self.clisock.send('True'.encode())
@@ -88,8 +89,7 @@ class TrentBase(Thread):
                     break
         self.clisock.close()
 
-#cond = Condition()
-algo = TrentAlgo(83, 89, 97)
+algo = TrentAlgo(167, 173, 179)
 algo.printInfo()
 sock = socket(AF_INET, SOCK_STREAM)
 sock.bind(('127.0.0.1', 21567)) 

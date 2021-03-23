@@ -1,5 +1,6 @@
 from clientalgo import ClientAlgo
 from clientsocket import TcpCliSock
+import time
 
 
 class ClientBase:
@@ -25,10 +26,13 @@ class ClientBase:
     def getPublicKey(self, name):
         self.sock.send('GTK', name)
         reply = self.sock.recvstr()
-        tmp = reply[1: -1].split(', (')
-        name = tmp[0][1: -1]
-        public_key = tmp[1][0:-1].split(', ')
-        public_key = int(public_key[0]), int(public_key[1])
+        try:
+            tmp = reply[1: -1].split(', (')
+            name = tmp[0][1: -1]
+            public_key = tmp[1][0:-1].split(', ')
+            public_key = int(public_key[0]), int(public_key[1])
+        except:
+            return 1,(1,1)
         return name, public_key
 
     def sendtoBob(self, msg):
@@ -40,17 +44,21 @@ class ClientBase:
         self.algo.makea()
         name, public_key = self.getPublicKey('Trent')
         A_0 = self.algo.makeA_0(public_key[0], public_key[1])
-        #time.sleep(1)
-        name, public_key = self.getPublicKey('Bob')
-        if public_key == None:return None
+        while(1):
+            name, public_key = self.getPublicKey('Bob')
+            if public_key != (1,1):break
+            print("Waiting for Bob...")
+            time.sleep(2)
         sA_0 = self.algo.RSA.docode(A_0, public_key)
-        #time.sleep(0.1)
         return self.sendtoBob(sA_0)
 #
     def Bobgetmsg(self):
         self.sock.send('BGM', None)
         reply = self.sock.recvstr()
-        return int(reply)
+        try:
+            return int(reply)
+        except:
+            return 0
 #
     def BobputN_0(self, N_0):
         self.sock.send('BPO', str(N_0))
@@ -60,21 +68,22 @@ class ClientBase:
     def prepareBob(self):
         self.algo.makea()
         self.publicRSAkey()
-        #time.sleep(0.1)
         name, public_key = self.getPublicKey('Trent')
         B_0 = self.algo.makeA_0(public_key[0], public_key[1])
-        #time.sleep(2)
-        sA_0 = self.Bobgetmsg()
+        while(1):
+            sA_0 = self.Bobgetmsg()
+            if(int(sA_0) != 0):break
+            print("Waiting for Alice...")
+            time.sleep(2)
         A_0 = self.algo.RSA.decode(sA_0)
         N_0 = (A_0 * B_0) % public_key[1]
-        #time.sleep(0.1)
         return self.BobputN_0(N_0)
 
 
 
 
 
-algo = ClientAlgo(23, 29, 31)
+algo = ClientAlgo(173, 179, 181)
 client = ClientBase('127.0.0.1', 21567, algo)
 client.algo.printInfo()
 print(client.publicRSAkey())
