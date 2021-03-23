@@ -2,10 +2,13 @@ from rsa import *
 import random
 class TrentAlgo:
     
-    MAXINT = 1e100 
+    MAXINT = 10000
 
     def __init__(self, p, q, e):
         self.RSA = RSA(p, q, e)
+        self.N = None
+        self.s = None
+        self.M = None
         pass
 
     def printInfo(self):

@@ -21,7 +21,6 @@ class TrentBase(Thread):
                         'BGM': self.BobgetMessage,
                         'BPO': self.BobputN_0
                 }
-
     def BobgetMessage(self):
         global AlicesA_0
         self.clisock.send(str(AlicesA_0).encode())
@@ -31,6 +30,7 @@ class TrentBase(Thread):
         N_0 = int(self.clisock.recv(self.bufsiz).decode())
         self.algo.makeN(N_0)
         N = self.algo.N
+        print('N= ' + str(N))
         self.clisock.send('True'.encode())
 
     def sendtoBob(self):
@@ -90,6 +90,7 @@ class TrentBase(Thread):
 
 #cond = Condition()
 algo = TrentAlgo(83, 89, 97)
+algo.printInfo()
 sock = socket(AF_INET, SOCK_STREAM)
 sock.bind(('127.0.0.1', 21567)) 
 sock.listen(5)

@@ -1,6 +1,7 @@
 from clientalgo import ClientAlgo
 from clientsocket import TcpCliSock
 
+
 class ClientBase:
 
     def __init__(self, host, port, algo):
@@ -31,7 +32,7 @@ class ClientBase:
         return name, public_key
 
     def sendtoBob(self, msg):
-        self.sock.send('STB', msg)
+        self.sock.send('STB', str(msg))
         reply = self.sock.recvstr()
         return bool(reply)
 
@@ -39,11 +40,11 @@ class ClientBase:
         self.algo.makea()
         name, public_key = self.getPublicKey('Trent')
         A_0 = self.algo.makeA_0(public_key[0], public_key[1])
-        time.sleep(1)
+        #time.sleep(1)
         name, public_key = self.getPublicKey('Bob')
         if public_key == None:return None
         sA_0 = self.algo.RSA.docode(A_0, public_key)
-        time.sleep(0.1)
+        #time.sleep(0.1)
         return self.sendtoBob(sA_0)
 #
     def Bobgetmsg(self):
@@ -59,14 +60,14 @@ class ClientBase:
     def prepareBob(self):
         self.algo.makea()
         self.publicRSAkey()
-        time.sleep(0.1)
+        #time.sleep(0.1)
         name, public_key = self.getPublicKey('Trent')
         B_0 = self.algo.makeA_0(public_key[0], public_key[1])
-        time.sleep(2)
+        #time.sleep(2)
         sA_0 = self.Bobgetmsg()
         A_0 = self.algo.RSA.decode(sA_0)
         N_0 = (A_0 * B_0) % public_key[1]
-        time.sleep(0.1)
+        #time.sleep(0.1)
         return self.BobputN_0(N_0)
 
 
@@ -75,9 +76,19 @@ class ClientBase:
 
 algo = ClientAlgo(23, 29, 31)
 client = ClientBase('127.0.0.1', 21567, algo)
-
-print(client.sock.state)
+client.algo.printInfo()
 print(client.publicRSAkey())
-print(client.getPublicKey('Bob'))
-client.sendtoBob('123')
+client.prepareAlice()
+print('a: ' + str(client.algo.a))
+
+print('As Bob: ')
 print(client.Bobgetmsg())
+
+print(client.prepareBob())
+print('b: ' + str(client.algo.a))
+'''
+print(client.sock.state)
+print(client.getPublicKey('Bob'))
+print(client.getPublicKey('Trent'))
+client.sendtoBob('123')
+'''

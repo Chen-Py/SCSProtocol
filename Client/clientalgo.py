@@ -3,10 +3,11 @@ import random
 
 class ClientAlgo:
     
-    MAXINT = 1e100
+    MAXINT = 10000
     
     def __init__(self, p, q, r):
         self.RSA = RSA(p, q, r)
+        self.a = None
         pass
     
     def printInfo(self):
