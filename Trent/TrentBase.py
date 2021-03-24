@@ -18,6 +18,7 @@ class TrentBase(Thread):
         self.actor = actor
         self.clisock = clisocket
         self.algo = algo
+        self.algo.makes()
         self.bufsiz = 1024
         self.switch = {'hello': self.hello,
                         'CEK': self.checkconnect,
@@ -41,7 +42,7 @@ class TrentBase(Thread):
             P = int(msg)
             if Q != 0:
                 self.algo.makeM(P, Q)
-                self.clisock.send(str(self.algo.M).encode())
+                self.clisock.send(str((self.algo.s, self.algo.M)).encode())
             else:
                 self.clisock.send('Wait'.encode())
 
@@ -49,7 +50,7 @@ class TrentBase(Thread):
             Q = int(msg)
             if P != 0:
                 self.algo.makeM(P, Q)
-                self.clisock.send(str(self.algo.M).encode())
+                self.clisock.send(str((self.algo.s, self.algo.M)).encode())
             else:
                 self.clisock.send('Wait'.encode())
 

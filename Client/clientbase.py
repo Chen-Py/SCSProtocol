@@ -99,8 +99,23 @@ class ClientBase:
             if(reply != 'Wait'):break
             time.sleep(2)
             print('Waiting for preparing M...')
-        print(reply)
-        return int(reply)
+        tmp = reply[1:-1].split(', ')
+        return int(tmp[0]), int(tmp[1])
+
+    def sign(self, tidu):
+        P = self.algo.randint(0.5) * self.algo.randint(0.5)
+        s, M = self.prepareM(P)
+        if tidu == True:
+            A = self.algo.signAccept(s, M)
+        else:
+            A = self.algo.signRefuse(s, M)
+        while(1)
+            self.sock.send('SGN', str(A))
+            reply = self.sock.recvstr()
+            if(reply != 'Wait'):break
+            time.sleep(2)
+            print('Waiting for the final result...')
+        return reply
 
     def run(self):
         self.sock.send('GTA', None)
@@ -117,7 +132,7 @@ class ClientBase:
 
 algo = ClientAlgo(173, 179, 181)
 client = ClientBase('127.0.0.1', 21567, algo)
-client.prepareM(12)
+print(client.prepareM(12))
 #client.sendContract('He hao ba.')
 
 #print(client.getContract())

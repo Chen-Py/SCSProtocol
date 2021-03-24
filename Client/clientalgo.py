@@ -10,6 +10,9 @@ class ClientAlgo:
         self.a = None
         pass
     
+    def randint(self, n):
+        return random.randint(0, self.MAXINT ** n)
+
     def printInfo(self):
         self.RSA.printkey()
         print('a: ' + str(self.a))
