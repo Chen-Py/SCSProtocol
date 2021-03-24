@@ -6,6 +6,10 @@ N = None
 BobKey = None
 AlicesA_0 = 0
 AB = 1
+A = 0
+B = 0
+P = 0
+Q = 0
 Contract = ''
 
 class TrentBase(Thread):
@@ -24,8 +28,55 @@ class TrentBase(Thread):
                         'BPO': self.BobputN_0,
                         'GTA': self.getActor,
                         'GTC': self.getContract,
-                        'SDC': self.sendContract
+                        'SDC': self.sendContract,
+                        'SGN': self.sign,
+                        'PPM': self.prepareM
                 }
+
+    def prepareM(self):
+        global P
+        global Q
+        msg = self.clisock.recv(self.bufsiz).decode()
+        if self.actor == 'Alice':
+            P = int(msg)
+            if Q != 0:
+                self.algo.makeM(P, Q)
+                self.clisock.send(str(self.algo.M).encode())
+            else:
+                self.clisock.send('Wait'.encode())
+
+        elif self.actor == 'Bob':
+            Q = int(msg)
+            if P != 0:
+                self.algo.makeM(P, Q)
+                self.clisock.send(str(self.algo.M).encode())
+            else:
+                self.clisock.send('Wait'.encode())
+
+
+    def sign(self):
+        msg = self.clisock.recv(self.bufsiz).decode()
+        global A
+        global B
+        if self.actor == 'Bob':
+            B = int(msg)
+            if A != 0:
+                if self.algo.check(A, B):
+                    self.clisock.send('Succeed'.encode())
+                else:
+                    self.clisock.send('Failed'.encode())
+            else:
+                self.clisock.send('Wait'.encode())
+        elif self.actor == 'Alice':
+            A = int(msg)
+            if B != 0:
+                if self.algo.check(A, B):
+                    self.clisock.send('Succeed'.encode())
+                else:
+                    self.clisock.send('Failed'.encode())
+            else:
+                self.clisock.send('Wait'.encode())
+
 
     def sendContract(self):
         global Contract

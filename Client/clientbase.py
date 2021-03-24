@@ -80,7 +80,7 @@ class ClientBase:
         return self.BobputN_0(N_0)
 
     def sendContract(self, Contract):
-        self.sock.send('SDC', Contract)
+        self.sock.send('SDC', str(Contract))
         reply = self.sock.recvstr()
         if(Contract == reply):
             return True
@@ -92,7 +92,15 @@ class ClientBase:
         reply = self.sock.recvstr()
         return reply
 
-    
+    def prepareM(self, P):
+        while(1):
+            self.sock.send('PPM', str(P))
+            reply = self.sock.recvstr()
+            if(reply != 'Wait'):break
+            time.sleep(2)
+            print('Waiting for preparing M...')
+        print(reply)
+        return int(reply)
 
     def run(self):
         self.sock.send('GTA', None)
@@ -109,10 +117,10 @@ class ClientBase:
 
 algo = ClientAlgo(173, 179, 181)
 client = ClientBase('127.0.0.1', 21567, algo)
+client.prepareM(12)
+#client.sendContract('He hao ba.')
 
-client.sendContract('He hao ba.')
-
-print(client.getContract())
+#print(client.getContract())
 #client.run()
 
 '''
