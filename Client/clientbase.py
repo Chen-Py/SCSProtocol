@@ -14,7 +14,7 @@ class ClientBase:
         self.sock.send('CEK', 'Hello,Trent')
         print(self.sock.recvstr())
         pass
-    
+
     def publicRSAkey(self):
         self.sock.send('PUB', str(self.algo.RSA.public_key).encode())
         reply = self.sock.recvstr()
@@ -51,7 +51,7 @@ class ClientBase:
             time.sleep(2)
         sA_0 = self.algo.RSA.docode(A_0, public_key)
         return self.sendtoBob(sA_0)
-#
+
     def Bobgetmsg(self):
         self.sock.send('BGM', None)
         reply = self.sock.recvstr()
@@ -59,7 +59,7 @@ class ClientBase:
             return int(reply)
         except:
             return 0
-#
+
     def BobputN_0(self, N_0):
         self.sock.send('BPO', str(N_0))
         reply = self.sock.recvstr()
@@ -79,13 +79,47 @@ class ClientBase:
         N_0 = (A_0 * B_0) % public_key[1]
         return self.BobputN_0(N_0)
 
+    def sendContract(self, Contract):
+        self.sock.send('SDC', Contract)
+        reply = self.sock.recvstr()
+        if(Contract == reply):
+            return True
+        else:
+            return False
 
+    def getContract(self):
+        self.sock.send('GTC', None)
+        reply = self.sock.recvstr()
+        return reply
 
+    
+
+    def run(self):
+        self.sock.send('GTA', None)
+        reply = self.sock.recvstr()
+        print('Act as: ' + reply)    	
+        if(reply == 'Alice'):
+            self.prepareAlice()
+        elif(reply == 'Bob'):
+            self.prepareBob()
+
+        print('a' + str(self.algo.a))
+        return reply
 
 
 algo = ClientAlgo(173, 179, 181)
 client = ClientBase('127.0.0.1', 21567, algo)
+
+client.sendContract('He hao ba.')
+
+print(client.getContract())
+#client.run()
+
+'''
+algo = ClientAlgo(173, 179, 181)
+client = ClientBase('127.0.0.1', 21567, algo)
 client.algo.printInfo()
+print('!!!: ' + client.run())
 print(client.publicRSAkey())
 client.prepareAlice()
 print('a: ' + str(client.algo.a))
@@ -95,6 +129,10 @@ print(client.Bobgetmsg())
 
 print(client.prepareBob())
 print('b: ' + str(client.algo.a))
+'''
+
+
+
 '''
 print(client.sock.state)
 print(client.getPublicKey('Bob'))

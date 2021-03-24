@@ -6,10 +6,12 @@ N = None
 BobKey = None
 AlicesA_0 = 0
 AB = 1
+Contract = ''
 
 class TrentBase(Thread):
-    def __init__(self, clisocket, algo):
+    def __init__(self, clisocket, algo, actor = 'Bob'):
         Thread.__init__(self)
+        self.actor = actor
         self.clisock = clisocket
         self.algo = algo
         self.bufsiz = 1024
@@ -19,8 +21,27 @@ class TrentBase(Thread):
                         'GTK': self.getPublicKey,
                         'STB': self.sendtoBob,
                         'BGM': self.BobgetMessage,
-                        'BPO': self.BobputN_0
+                        'BPO': self.BobputN_0,
+                        'GTA': self.getActor,
+                        'GTC': self.getContract,
+                        'SDC': self.sendContract
                 }
+
+    def sendContract(self):
+        global Contract
+        Contract = self.clisock.recv(self.bufsiz).decode()
+        self.clisock.send(Contract.encode())
+        pass
+
+    def getContract(self):
+        global Contract
+        self.clisock.send(Contract.encode())
+        pass
+
+    def getActor(self):
+        self.clisock.send(self.actor.encode())
+        pass
+
     def BobgetMessage(self):
         global AlicesA_0
         self.clisock.send(str(AlicesA_0).encode())
@@ -69,7 +90,7 @@ class TrentBase(Thread):
 
     def default(self):
         print(Error)
-        self.clisock.sed('CodeError'.encode())
+        self.clisock.send('CodeError'.encode())
 
     def run(self):
         while True:
@@ -84,19 +105,31 @@ class TrentBase(Thread):
             else:
                 try:
                     self.switch.get(mark, self.default)()
-                except:
+                except Exception as e:
+                    print(e)
                     print('Logged out')
                     break
         self.clisock.close()
 
 algo = TrentAlgo(167, 173, 179)
-algo.printInfo()
+#algo.printInfo()
 sock = socket(AF_INET, SOCK_STREAM)
 sock.bind(('127.0.0.1', 21567)) 
-sock.listen(5)
+sock.listen(2)
 print('Waiting...')
+clisockBob, addrBob = sock.accept()
+TBBob = TrentBase(clisockBob, algo, 'Bob')
+TBBob.start()
+print('...receive Bob from' + str(addrBob))
+
+clisockAlice, addrAlice = sock.accept()
+TBAlice = TrentBase(clisockAlice, algo, 'Alice')
+TBAlice.start()
+print('...receive Alice from' + str(addrAlice))
+'''
 while(1):
     clisock, addr = sock.accept()
-    TB = TrentBase(clisock, algo)
+    TB = TrentBase(clisock, algo, 'Alice')
     TB.start()
     print('...receive from' + str(addr))
+'''
