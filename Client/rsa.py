@@ -2,7 +2,7 @@ def supermy(a, n, m):
     if n == 0:return 1
     if n % 2 == 1:return (a * supermy(a, n-1, m)) % m
     tmp = supermy(a, n/2, m)
-    return tmp * tmp
+    return (tmp * tmp) % m
 
 def gcd(a, b):
     if b == 0:return a

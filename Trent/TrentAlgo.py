@@ -27,7 +27,7 @@ class TrentAlgo:
         return self.M
 
     def makes(self):
-        self.s = random.randint(0, self.MAXINT)
+        self.s = random.randint(1, self.MAXINT)
         return self.s
 
     def check(self, A, B):

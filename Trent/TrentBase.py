@@ -4,13 +4,13 @@ from threading import Thread, Condition
 
 N = None
 BobKey = None
-AlicesA_0 = 0
+AlicesA_0 = -1
 AB = 1
-A = 0
-B = 0
-P = 0
-Q = 0
-Contract = ''
+A = -1
+B = -1
+P = -1
+Q = -1
+Contract = 'Let the room get chiller!'
 
 class TrentBase(Thread):
     def __init__(self, clisocket, algo, actor = 'Bob'):
@@ -40,7 +40,7 @@ class TrentBase(Thread):
         msg = self.clisock.recv(self.bufsiz).decode()
         if self.actor == 'Alice':
             P = int(msg)
-            if Q != 0:
+            if Q != -1:
                 self.algo.makeM(P, Q)
                 self.clisock.send(str((self.algo.s, self.algo.M)).encode())
             else:
@@ -48,7 +48,7 @@ class TrentBase(Thread):
 
         elif self.actor == 'Bob':
             Q = int(msg)
-            if P != 0:
+            if P != -1:
                 self.algo.makeM(P, Q)
                 self.clisock.send(str((self.algo.s, self.algo.M)).encode())
             else:
@@ -61,7 +61,7 @@ class TrentBase(Thread):
         global B
         if self.actor == 'Bob':
             B = int(msg)
-            if A != 0:
+            if A != -1:
                 if self.algo.check(A, B):
                     self.clisock.send('Succeed'.encode())
                 else:
@@ -70,7 +70,7 @@ class TrentBase(Thread):
                 self.clisock.send('Wait'.encode())
         elif self.actor == 'Alice':
             A = int(msg)
-            if B != 0:
+            if B != -1:
                 if self.algo.check(A, B):
                     self.clisock.send('Succeed'.encode())
                 else:
@@ -104,7 +104,6 @@ class TrentBase(Thread):
         self.algo.makeN(N_0)
 
         N = self.algo.N
-        print('N= ' + str(N))
         self.clisock.send('True'.encode())
 
     def sendtoBob(self):

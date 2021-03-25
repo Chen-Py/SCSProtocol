@@ -11,7 +11,7 @@ class ClientAlgo:
         pass
     
     def randint(self, n):
-        return random.randint(0, self.MAXINT ** n)
+        return random.randint(1, self.MAXINT ** n)
 
     def printInfo(self):
         self.RSA.printkey()
@@ -19,7 +19,7 @@ class ClientAlgo:
         pass
 
     def makea(self):
-        self.a = random.randint(0, self.MAXINT ** 0.5)
+        self.a = random.randint(1, self.MAXINT ** 0.5)
         return self.a
 
     def makeA_0(self, e, n):
@@ -32,15 +32,15 @@ class ClientAlgo:
         return N_0
     
     def makeP(self):
-        P = random.randint(0, self.MAXINT ** 0.25) * random.randint(0, self.MAXINT ** 0.25)
+        P = random.randint(1, self.MAXINT ** 0.25) * random.randint(1, self.MAXINT ** 0.25)
         return P
 
     def signAccept(self, s, M):
-        A = supermy(a, s, M)
+        A = supermy(self.a, s, M)
         return A
     
-    def signRefuse(self):
-        fake_a = random.randint(0, M)
+    def signRefuse(self, s, M):
+        fake_a = random.randint(1, M)
         A = supermy(fake_a, s, M)
         return A
 

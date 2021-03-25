@@ -72,7 +72,7 @@ class ClientBase:
         B_0 = self.algo.makeA_0(public_key[0], public_key[1])
         while(1):
             sA_0 = self.Bobgetmsg()
-            if(int(sA_0) != 0):break
+            if(int(sA_0) != -1):break
             print("Waiting for Alice...")
             time.sleep(2)
         A_0 = self.algo.RSA.decode(sA_0)
@@ -103,13 +103,13 @@ class ClientBase:
         return int(tmp[0]), int(tmp[1])
 
     def sign(self, tidu):
-        P = self.algo.randint(0.5) * self.algo.randint(0.5)
+        P = self.algo.makeP()
         s, M = self.prepareM(P)
         if tidu == True:
             A = self.algo.signAccept(s, M)
         else:
             A = self.algo.signRefuse(s, M)
-        while(1)
+        while(1):
             self.sock.send('SGN', str(A))
             reply = self.sock.recvstr()
             if(reply != 'Wait'):break
@@ -117,7 +117,7 @@ class ClientBase:
             print('Waiting for the final result...')
         return reply
 
-    def run(self):
+    def runPrepare(self):
         self.sock.send('GTA', None)
         reply = self.sock.recvstr()
         print('Act as: ' + reply)    	
@@ -125,18 +125,18 @@ class ClientBase:
             self.prepareAlice()
         elif(reply == 'Bob'):
             self.prepareBob()
-
-        print('a' + str(self.algo.a))
         return reply
 
 
 algo = ClientAlgo(173, 179, 181)
 client = ClientBase('127.0.0.1', 21567, algo)
-print(client.prepareM(12))
+print(client.getContract())
+client.runPrepare()
+print(client.sign(False))
 #client.sendContract('He hao ba.')
 
 #print(client.getContract())
-#client.run()
+#client.runPrepare()
 
 '''
 algo = ClientAlgo(173, 179, 181)
