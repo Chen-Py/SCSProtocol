@@ -1,3 +1,4 @@
+from randprime import *
 def supermy(a, n, m):
     if n == 0:return 1
     if n % 2 == 1:return (a * supermy(a, n-1, m)) % m
@@ -24,7 +25,11 @@ def inv(e, phi):
 
 class RSA:
 
-    def __init__(self, p, q, e):
+    def __init__(self, p = 0, q = 0, e = 0, siz = 1024):
+        if (not isprime(p)) or (not isprime(q)) or (not isprime(e)):
+            p = randPrime(siz + 1)
+            q = randPrime(siz + 1)
+            e = randPrime(siz)
         self.makekey(p, q, e)
         pass
 
@@ -54,6 +59,6 @@ class RSA:
     def docode(self, msg, key):
         ans = supermy(msg, key[0], key[1])
         return ans
-
+        
     pass
 

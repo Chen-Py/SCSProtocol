@@ -4,8 +4,9 @@ class TrentAlgo:
     
     MAXINT = 10000
 
-    def __init__(self, p, q, e):
-        self.RSA = RSA(p, q, e)
+    def __init__(self, p, q, e, siz):
+        self.RSA = RSA(p, q, e, siz)
+        self.MAXINT = 2 ** (siz * 2)
         self.N = None
         self.s = None
         self.M = None

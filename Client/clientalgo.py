@@ -5,8 +5,9 @@ class ClientAlgo:
     
     MAXINT = 10000
     
-    def __init__(self, p, q, r):
-        self.RSA = RSA(p, q, r)
+    def __init__(self, p, q, r, siz):
+        self.RSA = RSA(p, q, r, siz)
+        self.MAXINT = 2 ** (siz * 2)
         self.a = None
         pass
     
@@ -20,6 +21,7 @@ class ClientAlgo:
 
     def makea(self):
         self.a = random.randint(1, self.MAXINT ** 0.5)
+        print("a: ", self.a)
         return self.a
 
     def makeA_0(self, e, n):

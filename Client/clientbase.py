@@ -92,23 +92,28 @@ class ClientBase:
         reply = self.sock.recvstr()
         return reply
 
-    def prepareM(self, P):
+    def prepareM(self):
+        P = self.algo.makeP()
         while(1):
             self.sock.send('PPM', str(P))
             reply = self.sock.recvstr()
-            if(reply != 'Wait'):break
+            print(reply)
+            if(reply != 'Wait'):
+                if reply == 'Retry':
+                    P = self.algo.makeP()
+                else:break
             time.sleep(2)
             print('Waiting for preparing M...')
         tmp = reply[1:-1].split(', ')
         return int(tmp[0]), int(tmp[1])
 
     def sign(self, tidu):
-        P = self.algo.makeP()
-        s, M = self.prepareM(P)
+        s, M = self.prepareM()
         if tidu == True:
             A = self.algo.signAccept(s, M)
         else:
             A = self.algo.signRefuse(s, M)
+        print(A)
         while(1):
             self.sock.send('SGN', str(A))
             reply = self.sock.recvstr()
@@ -128,11 +133,12 @@ class ClientBase:
         return reply
 
 
-algo = ClientAlgo(173, 179, 181)
+algo = ClientAlgo(4, 4, 4, 10)
 client = ClientBase('127.0.0.1', 21567, algo)
+client.algo.printInfo()
 print(client.getContract())
 client.runPrepare()
-print(client.sign(False))
+print(client.sign(True))
 #client.sendContract('He hao ba.')
 
 #print(client.getContract())

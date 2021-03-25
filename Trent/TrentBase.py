@@ -42,7 +42,11 @@ class TrentBase(Thread):
             P = int(msg)
             if Q != -1:
                 self.algo.makeM(P, Q)
-                self.clisock.send(str((self.algo.s, self.algo.M)).encode())
+                if self.algo.M == 0:
+                    P = -1
+                    self.clisock.send('Retry'.encode())
+                else:
+                    self.clisock.send(str((self.algo.s, self.algo.M)).encode())
             else:
                 self.clisock.send('Wait'.encode())
 
@@ -50,7 +54,11 @@ class TrentBase(Thread):
             Q = int(msg)
             if P != -1:
                 self.algo.makeM(P, Q)
-                self.clisock.send(str((self.algo.s, self.algo.M)).encode())
+                if self.algo.M == 0:
+                    Q = -1
+                    self.clisock.send('Retry'.encode())
+                else:
+                    self.clisock.send(str((self.algo.s, self.algo.M)).encode())
             else:
                 self.clisock.send('Wait'.encode())
 
@@ -162,7 +170,8 @@ class TrentBase(Thread):
                     break
         self.clisock.close()
 
-algo = TrentAlgo(167, 173, 179)
+algo = TrentAlgo(4, 4, 4, 10)
+algo.printInfo()
 #algo.printInfo()
 sock = socket(AF_INET, SOCK_STREAM)
 sock.bind(('127.0.0.1', 21567)) 
