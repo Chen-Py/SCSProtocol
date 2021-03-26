@@ -132,7 +132,7 @@ class ClientBase:
             self.prepareBob()
         return reply
 
-
+'''
 algo = ClientAlgo(4, 4, 4, 10)
 client = ClientBase('127.0.0.1', 21567, algo)
 client.algo.printInfo()
@@ -143,7 +143,7 @@ print(client.sign(True))
 
 #print(client.getContract())
 #client.runPrepare()
-
+'''
 '''
 algo = ClientAlgo(173, 179, 181)
 client = ClientBase('127.0.0.1', 21567, algo)

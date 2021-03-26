@@ -37,6 +37,7 @@ class TrentBase(Thread):
     def prepareM(self):
         global P
         global Q
+        print("P,Q: ", (P, Q))
         msg = self.clisock.recv(self.bufsiz).decode()
         if self.actor == 'Alice':
             P = int(msg)
