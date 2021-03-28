@@ -21,7 +21,6 @@ class TrentAlgo:
     
     def makeN(self, N_0):
         self.N = self.RSA.decode(N_0)
-        print('N: ',self.N)
         return self.N
 
     def makeM(self, P, Q):
@@ -33,9 +32,6 @@ class TrentAlgo:
         return self.s
 
     def check(self, A, B):
-        print(A, B)
-        print(self.N, self.s, self.M)
-        print(supermy(self.N, self.s, self.M))
         return (A * B) % self.M == supermy(self.N, self.s, self.M)
 
 

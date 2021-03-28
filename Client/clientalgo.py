@@ -22,7 +22,7 @@ class ClientAlgo:
 
     def makea(self):
         self.a = random.randint(1, self.MAXINT ** 0.5)
-        print("a: ", self.a)
+        #print("a: ", self.a)
         return self.a
 
     def makeA_0(self, e, n):

@@ -10,6 +10,8 @@ A = -1
 B = -1
 P = -1
 Q = -1
+FinalResult = 'Unknown'
+
 Contract = 'Let the room get chiller!'
 
 class TrentBase(Thread):
@@ -37,7 +39,7 @@ class TrentBase(Thread):
     def prepareM(self):
         global P
         global Q
-        print("P,Q: ", (P, Q))
+        #print("P,Q: ", (P, Q))
         msg = self.clisock.recv(self.bufsiz).decode()
         if self.actor == 'Alice':
             P = int(msg)
@@ -66,14 +68,17 @@ class TrentBase(Thread):
 
     def sign(self):
         msg = self.clisock.recv(self.bufsiz).decode()
+        global FinalResult
         global A
         global B
         if self.actor == 'Bob':
             B = int(msg)
             if A != -1:
                 if self.algo.check(A, B):
+                    FinalResult = 'Succeed'
                     self.clisock.send('Succeed'.encode())
                 else:
+                    FinalResult = 'Failed'
                     self.clisock.send('Failed'.encode())
             else:
                 self.clisock.send('Wait'.encode())
@@ -81,8 +86,10 @@ class TrentBase(Thread):
             A = int(msg)
             if B != -1:
                 if self.algo.check(A, B):
+                    FinalResult = 'Succeed'
                     self.clisock.send('Succeed'.encode())
                 else:
+                    FinalResult = 'Failed'
                     self.clisock.send('Failed'.encode())
             else:
                 self.clisock.send('Wait'.encode())
@@ -172,7 +179,6 @@ class TrentBase(Thread):
         self.clisock.close()
 
 algo = TrentAlgo(4, 4, 4, 10)
-algo.printInfo()
 #algo.printInfo()
 sock = socket(AF_INET, SOCK_STREAM)
 sock.bind(('127.0.0.1', 21567)) 

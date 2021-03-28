@@ -44,14 +44,14 @@ class ClientBase:
         self.algo.makea()
         name, public_key = self.getPublicKey('Trent')
         A_0 = self.algo.makeA_0(public_key[0], public_key[1])
-        print("A_0: ", A_0)
+        #print("A_0: ", A_0)
         while(1):
             name, public_key = self.getPublicKey('Bob')
             if public_key != (1,1):break
             print("Waiting for Bob...")
             time.sleep(2)
         sA_0 = self.algo.RSA.docode(A_0, public_key)
-        print('aA_0: ', sA_0)
+        #print('sA_0: ', sA_0)
         return self.sendtoBob(sA_0)
 
     def Bobgetmsg(self):
@@ -72,17 +72,17 @@ class ClientBase:
         self.publicRSAkey()
         name, public_key = self.getPublicKey('Trent')
         B_0 = self.algo.makeA_0(public_key[0], public_key[1])
-        print('B_0: ', B_0)
+        #print('B_0: ', B_0)
         while(1):
             sA_0 = self.Bobgetmsg()
             if(int(sA_0) != -1):break
             print("Waiting for Alice...")
             time.sleep(2)
-        print('sA_0: ', sA_0)
+        #print('sA_0: ', sA_0)
         A_0 = self.algo.RSA.decode(sA_0)
-        print('A_0: ', A_0)
+        #print('A_0: ', A_0)
         N_0 = (A_0 * B_0) % public_key[1]
-        print('N_0: ', N_0)
+        #print('N_0: ', N_0)
         return self.BobputN_0(N_0)
 
     def sendContract(self, Contract):
@@ -101,15 +101,15 @@ class ClientBase:
     def prepareM(self):
         P = self.algo.makeP()
         while(1):
+            print('Waiting for preparing M...')
             self.sock.send('PPM', str(P))
             reply = self.sock.recvstr()
-            print(reply)
+            #print(reply)
             if(reply != 'Wait'):
                 if reply == 'Retry':
                     P = self.algo.makeP()
                 else:break
             time.sleep(2)
-            print('Waiting for preparing M...')
         tmp = reply[1:-1].split(', ')
         return int(tmp[0]), int(tmp[1])
 
@@ -119,13 +119,13 @@ class ClientBase:
             A = self.algo.signAccept(s, M)
         else:
             A = self.algo.signRefuse(s, M)
-        print(A)
+        #print(A)
         while(1):
+            print('Waiting for the final result...')
             self.sock.send('SGN', str(A))
             reply = self.sock.recvstr()
             if(reply != 'Wait'):break
             time.sleep(2)
-            print('Waiting for the final result...')
         return reply
 
     def runPrepare(self):
