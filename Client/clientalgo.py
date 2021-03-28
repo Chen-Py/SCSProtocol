@@ -6,6 +6,7 @@ class ClientAlgo:
     MAXINT = 10000
     
     def __init__(self, p, q, r, siz):
+        siz = siz + 2
         self.RSA = RSA(p, q, r, siz)
         self.MAXINT = 2 ** (siz * 2)
         self.a = None

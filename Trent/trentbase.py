@@ -110,6 +110,7 @@ class TrentBase(Thread):
     def BobputN_0(self):
         global N
         N_0 = int(self.clisock.recv(self.bufsiz).decode())
+        print('N_0: ', N_0)
         self.algo.makeN(N_0)
 
         N = self.algo.N

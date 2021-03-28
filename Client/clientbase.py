@@ -44,12 +44,14 @@ class ClientBase:
         self.algo.makea()
         name, public_key = self.getPublicKey('Trent')
         A_0 = self.algo.makeA_0(public_key[0], public_key[1])
+        print("A_0: ", A_0)
         while(1):
             name, public_key = self.getPublicKey('Bob')
             if public_key != (1,1):break
             print("Waiting for Bob...")
             time.sleep(2)
         sA_0 = self.algo.RSA.docode(A_0, public_key)
+        print('aA_0: ', sA_0)
         return self.sendtoBob(sA_0)
 
     def Bobgetmsg(self):
@@ -70,13 +72,17 @@ class ClientBase:
         self.publicRSAkey()
         name, public_key = self.getPublicKey('Trent')
         B_0 = self.algo.makeA_0(public_key[0], public_key[1])
+        print('B_0: ', B_0)
         while(1):
             sA_0 = self.Bobgetmsg()
             if(int(sA_0) != -1):break
             print("Waiting for Alice...")
             time.sleep(2)
+        print('sA_0: ', sA_0)
         A_0 = self.algo.RSA.decode(sA_0)
+        print('A_0: ', A_0)
         N_0 = (A_0 * B_0) % public_key[1]
+        print('N_0: ', N_0)
         return self.BobputN_0(N_0)
 
     def sendContract(self, Contract):
